@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: brano
+  profiles:
+    default: local
+mybatis:
+  mapper-locations: classpath:mapper/kr/pe/ryudaewan/brano/**/dao/*Dao.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    jdbc-type-for-null: NULL

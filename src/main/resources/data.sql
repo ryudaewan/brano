@@ -1,0 +1,8 @@
+insert into users (uid, name, email, created_at, updated_at, deleted_at) values (0, '관리자', 'admin@brano.com',  now(), null, null);
+insert into users (uid, name, email, created_at, updated_at, deleted_at) values (1, '장원영', 'think@brano.com',  now(), null, null);
+insert into users (uid, name, email, created_at, updated_at, deleted_at) values (2, '하지원', 'hahaha@brano.com', now(), null, null);
+insert into users (uid, name, email, created_at, updated_at, deleted_at) values (3, '오인혜', 'inhye@brano.com'
+    , to_timestamp('2019-04-23 13:34:41', 'YYYY-MM-DD HH24:MI:SS')
+    , to_timestamp('2019-05-21 18:12:13', 'YYYY-MM-DD HH24:MI:SS')
+    , to_timestamp('2020-09-14 22:59:59', 'YYYY-MM-DD HH24:MI:SS')
+);
