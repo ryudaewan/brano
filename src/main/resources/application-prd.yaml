@@ -1,0 +1,7 @@
+spring:
+  config:
+    activate:
+      on-profile: prd
+  sql:
+    init:
+      mode: never
