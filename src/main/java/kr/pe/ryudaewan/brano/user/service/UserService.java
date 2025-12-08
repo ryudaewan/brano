@@ -22,8 +22,8 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public User getUser(Long uid) {
-        User result = this.userDao.selectUserByUid(uid);
+    public UserVo getUser(Long uid) {
+        UserVo result = this.userDao.selectUserByUid(uid);
 
         log.debug("조회 결과 = [{}]", result);
 
@@ -31,8 +31,8 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public List<User> findUsers() {
-        List<User> result = this.userDao.selectUsers();
+    public List<UserVo> findUsers() {
+        List<UserVo> result = this.userDao.selectUsers();
 
         if (null == result) {
             result = Collections.emptyList();
@@ -42,7 +42,7 @@ public class UserService {
     }
 
     @Transactional
-    public User registerUser(User user) {
+    public UserVo registerUser(UserVo user) {
         user.setCreatedAt(LocalDateTime.now());
 
         try {
@@ -57,12 +57,12 @@ public class UserService {
     }
 
     @Transactional
-    public User modifyUser(User user) {
+    public UserVo modifyUser(UserVo user) {
         Long uid = user.getUid();
 
         if (null == uid) return null;
 
-        User dbUser = this.userDao.selectUserByUid(uid);
+        UserVo dbUser = this.userDao.selectUserByUid(uid);
 
         if (null == dbUser) return null;
 

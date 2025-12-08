@@ -1,8 +1,8 @@
 package kr.pe.ryudaewan.brano.user.controller;
 
 import jakarta.validation.Valid;
-import kr.pe.ryudaewan.brano.user.service.User;
 import kr.pe.ryudaewan.brano.user.service.UserService;
+import kr.pe.ryudaewan.brano.user.service.UserVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,8 +19,8 @@ public class UserController {
     }
 
     @GetMapping("/api/users")
-    public ResponseEntity<List<User>> findUsers() {
-        List<User> dbUsers = this.userService.findUsers();
+    public ResponseEntity<List<UserVo>> findUsers() {
+        List<UserVo> dbUsers = this.userService.findUsers();
 
         if (null == dbUsers || dbUsers.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -30,8 +30,8 @@ public class UserController {
     }
 
     @GetMapping("/api/user/{uid}")
-    public ResponseEntity<User> getUser(@PathVariable Long uid) {
-        User dbUser = this.userService.getUser(uid);
+    public ResponseEntity<UserVo> getUser(@PathVariable Long uid) {
+        UserVo dbUser = this.userService.getUser(uid);
 
         if (null == dbUser) return ResponseEntity.notFound().build();
 
@@ -39,13 +39,13 @@ public class UserController {
     }
 
     @PutMapping("/api/user")
-    public User registerUser(@RequestBody @Valid User user) {
+    public UserVo registerUser(@RequestBody @Valid UserVo user) {
         return this.userService.registerUser(user);
     }
 
     @PostMapping("/api/user")
-    public ResponseEntity<User> modifyUser(@RequestBody @Valid User user) {
-        User dbUser = userService.modifyUser(user);
+    public ResponseEntity<UserVo> modifyUser(@RequestBody @Valid UserVo user) {
+        UserVo dbUser = userService.modifyUser(user);
 
         if (dbUser == null) {
             return ResponseEntity.notFound().build();

@@ -1,19 +1,19 @@
 package kr.pe.ryudaewan.brano.user.dao;
 
-import kr.pe.ryudaewan.brano.user.service.User;
+import kr.pe.ryudaewan.brano.user.service.UserVo;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
 @Mapper
 public interface UserDao {
-    User selectUserByUid(long uid);
+    UserVo selectUserByUid(long uid);
 
-    List<User> selectUsers();
+    List<UserVo> selectUsers();
 
-    int insertUser(User user);
+    int insertUser(UserVo user);
 
-    int updateUser(User user);
+    int updateUser(UserVo user);
 
     int deleteUser(Long uid);
 }

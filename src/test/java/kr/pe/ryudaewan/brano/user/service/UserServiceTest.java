@@ -33,14 +33,14 @@ class UserServiceTest {
     void getUser_success() {
         // given
         Long uid = 1L;
-        User mockUser = new User();
+        UserVo mockUser = new UserVo();
         mockUser.setUid(uid);
         mockUser.setEmail("test@test.com");
 
         given(userDao.selectUserByUid(uid)).willReturn(mockUser);
 
         // when
-        User result = userService.getUser(uid);
+        UserVo result = userService.getUser(uid);
 
         // then
         assertThat(result).isNotNull();
@@ -55,7 +55,7 @@ class UserServiceTest {
         given(userDao.selectUsers()).willReturn(null);
 
         // when
-        List<User> result = userService.findUsers();
+        List<UserVo> result = userService.findUsers();
 
         // then
         assertThat(result).isNotNull().isEmpty();
@@ -65,13 +65,13 @@ class UserServiceTest {
     @DisplayName("사용자 등록 - 성공")
     void registerUser_success() {
         // given
-        User user = new User();
+        UserVo user = new UserVo();
         user.setEmail("new@test.com");
 
-        given(userDao.insertUser(any(User.class))).willReturn(1);
+        given(userDao.insertUser(any(UserVo.class))).willReturn(1);
 
         // when
-        User result = userService.registerUser(user);
+        UserVo result = userService.registerUser(user);
 
         // then
         assertThat(result.getCreatedAt()).isNotNull(); // 생성일시가 세팅되었는지 확인
@@ -82,10 +82,10 @@ class UserServiceTest {
     @DisplayName("사용자 등록 - 중복된 이메일일 경우 오류 발생")
     void registerUser_duplicateEmail() {
         // given
-        User user = new User();
+        UserVo user = new UserVo();
         user.setEmail("dup@test.com");
 
-        given(userDao.insertUser(any(User.class)))
+        given(userDao.insertUser(any(UserVo.class)))
                 .willThrow(new DuplicateKeyException("다른 사용자가 쓰고 있는 이메일로는 신규 사용자 생성 불가능"));
 
         // when & then
@@ -99,19 +99,19 @@ class UserServiceTest {
     void modifyUser_success() {
         // given
         Long uid = 1L;
-        User requestUser = new User();
+        UserVo requestUser = new UserVo();
         requestUser.setUid(uid);
         requestUser.setName("Updated Name");
 
-        User dbUser = new User();
+        UserVo dbUser = new UserVo();
         dbUser.setUid(uid);
         dbUser.setCreatedAt(LocalDateTime.now().minusDays(1)); // 기존 가입일
 
         given(userDao.selectUserByUid(uid)).willReturn(dbUser);
-        given(userDao.updateUser(any(User.class))).willReturn(1);
+        given(userDao.updateUser(any(UserVo.class))).willReturn(1);
 
         // when
-        User result = userService.modifyUser(requestUser);
+        UserVo result = userService.modifyUser(requestUser);
 
         // then
         assertThat(result).isNotNull();
@@ -124,17 +124,17 @@ class UserServiceTest {
     void modifyUser_fail_whenDeleted() {
         // given
         Long uid = 1L;
-        User requestUser = new User();
+        UserVo requestUser = new UserVo();
         requestUser.setUid(uid);
 
-        User deletedUser = new User();
+        UserVo deletedUser = new UserVo();
         deletedUser.setUid(uid);
         deletedUser.setDeletedAt(LocalDateTime.now()); // 삭제된 상태
 
         given(userDao.selectUserByUid(uid)).willReturn(deletedUser);
 
         // when
-        User result = userService.modifyUser(requestUser);
+        UserVo result = userService.modifyUser(requestUser);
 
         // then
         assertThat(result).isNull();

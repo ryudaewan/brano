@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.pe.ryudaewan.brano.message.dao.MessageDao">
+    <resultMap id="commonResultMap" type="kr.pe.ryudaewan.brano.base.CommonVo">
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+        <result column="deleted_at" property="deletedAt"/>
+    </resultMap>
+    <resultMap id="messageResultMap" type="kr.pe.ryudaewan.brano.message.service.MessageVo" extends="commonResultMap">
+        <id column="message_id" property="messageId"/>
+        <result column="locale" property="locale"/>
+        <result column="email" property="email"/>
+    </resultMap>
+
+    <select id="selectMessageByCodeAndLocale" resultMap="messageResultMap"
+            parameterType="kr.pe.ryudaewan.brano.message.service.MessageVo">
+        /* MessageDao.selectMessageByCodeAndLocale */
+        select u.message_id
+        , u.locale
+        , u.message_key
+        , u.message_content
+        , u.created_at
+        , u.updated_at
+        , u.deleted_at
+        from messages u
+        where u.message_id = #{messageId}
+        and u.locale = #{locale}
+        and u.message_key = #{messageKey}
+        and u.deleted_at is null
+    </select>
+
+    <!--    <select id="selectUsers" resultType="kr.pe.ryudaewan.brano.user.service.User">-->
+    <!--        /* UserDao.selectUsers */-->
+    <!--        select u.uid-->
+    <!--        , u.name-->
+    <!--        , u.email-->
+    <!--        , u.created_at-->
+    <!--        , u.updated_at-->
+    <!--        , u.deleted_at-->
+    <!--        from users u-->
+    <!--        where u.deleted_at is null-->
+    <!--        and u.-->
+    <!--    </select>-->
+
+    <!--    <insert id="insertUser" parameterType="kr.pe.ryudaewan.brano.user.service.User">-->
+    <!--        <selectKey keyProperty="uid" resultType="long" order="BEFORE">-->
+    <!--            /* UserDao.insertUser */-->
+    <!--            select coalesce(max(u.uid), -1) + 1 from users u-->
+    <!--        </selectKey>-->
+    <!--        /* UserDao.insertUser */-->
+    <!--        insert into users(uid, name, email, created_at)-->
+    <!--        values (#{uid}, #{name}, #{email}, #{createdAt} )-->
+    <!--    </insert>-->
+
+    <!--    <update id="updateUser" parameterType="kr.pe.ryudaewan.brano.user.service.User">-->
+    <!--        /* UserDao.updateUser */-->
+    <!--        update users u set u.name = #{name}-->
+    <!--        , u.email = #{email}-->
+    <!--        , u.updated_at = #{updatedAt}-->
+    <!--        where u.uid = #{uid}-->
+    <!--        and u.deleted_at is null-->
+    <!--    </update>-->
+
+    <!--    <update id="deleteUser" parameterType="java.lang.Long">-->
+    <!--        /* UserDao.deleteUser */-->
+    <!--        update users u set u.deleted_at = now()-->
+    <!--        where u.uid = #{uid}-->
+    <!--        and u.deleted_at is null-->
+    <!--    </update>-->
+</mapper>

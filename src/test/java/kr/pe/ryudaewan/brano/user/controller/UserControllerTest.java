@@ -3,8 +3,8 @@ package kr.pe.ryudaewan.brano.user.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.pe.ryudaewan.brano.config.SecurityConfigLocal;
 import kr.pe.ryudaewan.brano.configuration.TestH2Config;
-import kr.pe.ryudaewan.brano.user.service.User;
 import kr.pe.ryudaewan.brano.user.service.UserService;
+import kr.pe.ryudaewan.brano.user.service.UserVo;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +42,7 @@ class UserControllerTest {
     @DisplayName("전체 사용자 조회 - 성공")
     void findUsers_Success() throws Exception {
         // given
-        User user = new User();
+        UserVo user = new UserVo();
         user.setUid(1L);
         user.setName("Test User");
         user.setEmail("test@example.com");
@@ -74,7 +74,7 @@ class UserControllerTest {
     void getUser_Success() throws Exception {
         // given
         Long uid = 1L;
-        User user = new User();
+        UserVo user = new UserVo();
         user.setUid(uid);
         user.setName("Test User");
         user.setCreatedAt(LocalDateTime.now());
@@ -105,16 +105,16 @@ class UserControllerTest {
     @DisplayName("사용자 등록 (PUT) - 성공")
     void registerUser_Success() throws Exception {
         // given
-        User requestUser = new User();
+        UserVo requestUser = new UserVo();
         requestUser.setName("New User");
         requestUser.setEmail("new@example.com");
 
-        User savedUser = new User();
+        UserVo savedUser = new UserVo();
         savedUser.setUid(10L);
         savedUser.setName("New User");
         savedUser.setCreatedAt(LocalDateTime.now());
 
-        given(userService.registerUser(any(User.class))).willReturn(savedUser);
+        given(userService.registerUser(any(UserVo.class))).willReturn(savedUser);
 
         // when & then
         mockMvc.perform(put("/api/user")
@@ -153,14 +153,14 @@ class UserControllerTest {
     @DisplayName("사용자 수정 (POST) - 성공")
     void modifyUser_Success() throws Exception {
         // given
-        User modifyReq = new User();
+        UserVo modifyReq = new UserVo();
         modifyReq.setUid(1L);
         modifyReq.setEmail("updated@brano.com");
         modifyReq.setName("Updated Name");
         LocalDateTime now = LocalDateTime.now();
         modifyReq.setCreatedAt(now);
 
-        given(userService.modifyUser(any(User.class))).willReturn(modifyReq);
+        given(userService.modifyUser(any(UserVo.class))).willReturn(modifyReq);
 
         // when & then
         mockMvc.perform(post("/api/user")
@@ -175,7 +175,7 @@ class UserControllerTest {
     @DisplayName("사용자 수정 (POST) - 없는 사용자 수정 시도")
     void modifyUser_NotFound() throws Exception {
         // given
-        User modifyReq = new User();
+        UserVo modifyReq = new UserVo();
         modifyReq.setUid(167L);
         modifyReq.setEmail("test@brano.com");
         modifyReq.setName("Updated Name");
