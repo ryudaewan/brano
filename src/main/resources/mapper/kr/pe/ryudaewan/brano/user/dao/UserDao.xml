@@ -2,13 +2,10 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="kr.pe.ryudaewan.brano.user.dao.UserDao">
-    <resultMap id="commonResultMap" type="kr.pe.ryudaewan.brano.base.CommonVo">
-        <result column="created_at" property="createdAt"/>
-        <result column="updated_at" property="updatedAt"/>
-        <result column="deleted_at" property="deletedAt"/>
-    </resultMap>
-    <resultMap id="userResultMap" type="kr.pe.ryudaewan.brano.user.service.UserVo" extends="commonResultMap">
+    <resultMap id="userResultMap" type="kr.pe.ryudaewan.brano.user.service.UserVo"
+               extends="kr.pe.ryudaewan.brano.base.dao.CommonDao.commonResultMap">
         <id column="uid" property="uid"/>
         <result column="name" property="name"/>
         <result column="email" property="email"/>

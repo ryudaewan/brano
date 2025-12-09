@@ -1,4 +1,4 @@
-package kr.pe.ryudaewan.brano.base;
+package kr.pe.ryudaewan.brano.base.service;
 
 import lombok.Getter;
 import lombok.Setter;

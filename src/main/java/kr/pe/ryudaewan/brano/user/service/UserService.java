@@ -48,7 +48,7 @@ public class UserService {
         try {
             this.userDao.insertUser(user);
         } catch (DuplicateKeyException dke) {
-            throw new DuplicateUserException("다른 사용자가 쓰고 있는 이메일로는 신규 사용자 생성 불가능");
+            throw new DuplicateUserException();
         }
 
         log.debug("생성한 사용자 정보 = [{}]", user);
