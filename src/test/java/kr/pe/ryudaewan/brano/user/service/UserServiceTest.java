@@ -79,7 +79,7 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("사용자 등록 - 중복된 이메일일 경우 오류 발생")
+    @DisplayName("사용자 등록 - 기 등록한 이메일 주소로 인해 실패")
     void registerUser_duplicateEmail() {
         // given
         UserVo user = new UserVo();
