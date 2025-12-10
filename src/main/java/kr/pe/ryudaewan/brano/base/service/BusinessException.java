@@ -2,7 +2,7 @@ package kr.pe.ryudaewan.brano.base.service;
 
 public class BusinessException extends RuntimeException {
     private final String errorCode;
-    private String args[] = null;
+    private String[] args = null;
 
     public BusinessException(String errorCode) {
         super();

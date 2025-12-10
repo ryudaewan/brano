@@ -11,12 +11,12 @@ import lombok.Setter;
 public class UserVo extends CommonVo {
     private Long uid;
 
-    @Email(message = "#{validation.email.invalid}")
-    @NotBlank(message = "#{validation.email.required}")
+    @Email(message = "{validation.email.invalid}")
+    @NotBlank(message = "{validation.email.required}")
     private String email;
 
     private String password;
 
-    @NotBlank(message = "#{validation.name.required}")
+    @NotBlank(message = "{validation.name.required}")
     private String name;
 }

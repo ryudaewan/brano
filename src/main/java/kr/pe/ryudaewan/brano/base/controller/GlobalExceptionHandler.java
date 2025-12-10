@@ -4,19 +4,25 @@ import kr.pe.ryudaewan.brano.base.service.BusinessException;
 import kr.pe.ryudaewan.brano.base.service.DuplicateException;
 import kr.pe.ryudaewan.brano.base.service.ErrorResponseVo;
 import kr.pe.ryudaewan.brano.base.service.NotExistException;
+import kr.pe.ryudaewan.brano.config.MessageSourceInterpolator;
 import kr.pe.ryudaewan.brano.config.RDBMessageSource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.StringTokenizer;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice  // 또는 @ControllerAdvice + @ResponseBody
+@Slf4j
 public class GlobalExceptionHandler {
     private final RDBMessageSource messageSource;
     private final Locale locale = LocaleContextHolder.getLocale();
@@ -26,17 +32,23 @@ public class GlobalExceptionHandler {
         this.messageSource = messageSource;
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<List<ErrorResponseVo>> handleValidation(MethodArgumentNotValidException ex) {
-        List<ErrorResponseVo> errMsgs = ex.getAllErrors().stream().map(
-                err -> {
-                    String code = err.getCodes()[0];
-                    String msg = err.getDefaultMessage();
+    public List<ErrorResponseVo> handleValidationExceptions(MethodArgumentNotValidException ex) {
 
-                    return new ErrorResponseVo(code, msg);
-                }).toList();
+        return ex.getBindingResult().getFieldErrors().stream()
+                .map(error -> {
+                    // 1. 인코딩된 메시지 획득 (예: validation.email.required|||이메일은 필수입니다.)
+                    String encodedMessage = error.getDefaultMessage();
 
-        return ResponseEntity.badRequest().body(errMsgs);
+                    // 2. ★ 핵심: 구분자로 메시지 키와 최종 메시지를 분리
+                    StringTokenizer st = new StringTokenizer(encodedMessage, MessageSourceInterpolator.SEPARATOR);
+                    String code = st.nextToken();
+                    String message = st.nextToken();
+
+                    return new ErrorResponseVo(code, message);
+                })
+                .collect(Collectors.toList());
     }
 
     @ExceptionHandler(NotExistException.class)
