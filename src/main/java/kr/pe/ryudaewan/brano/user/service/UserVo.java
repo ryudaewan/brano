@@ -2,28 +2,21 @@ package kr.pe.ryudaewan.brano.user.service;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import kr.pe.ryudaewan.brano.base.service.CommonVo;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Setter
-public class User {
+public class UserVo extends CommonVo {
     private Long uid;
 
-    @Email
-    @NotBlank
+    @Email(message = "{validation.email.invalid}")
+    @NotBlank(message = "{validation.email.required}")
     private String email;
 
     private String password;
 
-    @NotBlank
+    @NotBlank(message = "{validation.name.required}")
     private String name;
-
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
-
-    private LocalDateTime deletedAt;
 }

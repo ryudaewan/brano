@@ -1,15 +1,19 @@
 package kr.pe.ryudaewan.brano.user.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import kr.pe.ryudaewan.brano.base.service.ErrorResponseVo;
+import kr.pe.ryudaewan.brano.config.RDBMessageSource;
 import kr.pe.ryudaewan.brano.config.SecurityConfigLocal;
 import kr.pe.ryudaewan.brano.configuration.TestH2Config;
-import kr.pe.ryudaewan.brano.user.service.User;
+import kr.pe.ryudaewan.brano.user.service.DuplicateUserException;
 import kr.pe.ryudaewan.brano.user.service.UserService;
+import kr.pe.ryudaewan.brano.user.service.UserVo;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -35,6 +39,9 @@ class UserControllerTest {
     @MockitoBean
     private UserService userService;
 
+    @MockitoBean
+    private RDBMessageSource messageSource;
+
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -42,7 +49,7 @@ class UserControllerTest {
     @DisplayName("전체 사용자 조회 - 성공")
     void findUsers_Success() throws Exception {
         // given
-        User user = new User();
+        UserVo user = new UserVo();
         user.setUid(1L);
         user.setName("Test User");
         user.setEmail("test@example.com");
@@ -74,7 +81,7 @@ class UserControllerTest {
     void getUser_Success() throws Exception {
         // given
         Long uid = 1L;
-        User user = new User();
+        UserVo user = new UserVo();
         user.setUid(uid);
         user.setName("Test User");
         user.setCreatedAt(LocalDateTime.now());
@@ -105,16 +112,16 @@ class UserControllerTest {
     @DisplayName("사용자 등록 (PUT) - 성공")
     void registerUser_Success() throws Exception {
         // given
-        User requestUser = new User();
+        UserVo requestUser = new UserVo();
         requestUser.setName("New User");
         requestUser.setEmail("new@example.com");
 
-        User savedUser = new User();
+        UserVo savedUser = new UserVo();
         savedUser.setUid(10L);
         savedUser.setName("New User");
         savedUser.setCreatedAt(LocalDateTime.now());
 
-        given(userService.registerUser(any(User.class))).willReturn(savedUser);
+        given(userService.registerUser(any(UserVo.class))).willReturn(savedUser);
 
         // when & then
         mockMvc.perform(put("/api/user")
@@ -125,42 +132,46 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.uid").value(10L));
     }
 
-//    @Test
-//    @DisplayName("사용자 등록 (PUT) - 기 등록한 이메일 주소로 인해 실패")
-//    void registerUser_DupEmail() throws Exception {
-//        // given
-//        User requestUser = new User();
-//        requestUser.setName("New User");
-//        requestUser.setEmail("new@example.com");
-//
-//        User savedUser = new User();
-//        savedUser.setUid(10L);
-//        savedUser.setName("New User");
-//        savedUser.setCreatedAt(LocalDateTime.now());
-//
-//        given(userService.registerUser(any(User.class))).willThrow(new DuplicateUserException("다른 사용자가 쓰고 있는 이메일로는 신규 사용자 생성 불가능"));
-//
-//        // when & then
-//        mockMvc.perform(put("/api/user")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(requestUser)))
-//                .andDo(print())
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.uid").value(10L));
-//    }
+    @Test
+    @DisplayName("사용자 등록 (PUT) - 기 등록한 이메일 주소로 인해 실패")
+    void registerUser_DupEmail() throws Exception {
+        // given
+        LocalDateTime now = LocalDateTime.now();
+        String errorCode = "user.dup.email";
+        String errorMessage = "이미 쓰는 이메일로 새 사용자 등록 시도";
+        ErrorResponseVo errorResponse = new ErrorResponseVo(errorCode, errorMessage);
+        errorResponse.setTimestamp(now);
+
+        UserVo requestUser = new UserVo();
+        requestUser.setName("New User");
+        requestUser.setEmail("dup.email@brano.com");
+
+        given(userService.registerUser(any(UserVo.class))).willThrow(new DuplicateUserException());
+        given(messageSource.getMessage(errorCode, null, LocaleContextHolder.getLocale()))
+                .willReturn(errorMessage);
+
+        // when & then
+        mockMvc.perform(put("/api/user")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestUser)))
+                .andDo(print())
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.messageKey").value(errorCode))
+                .andExpect(jsonPath("$.messageContent").value(errorMessage));
+    }
 
     @Test
     @DisplayName("사용자 수정 (POST) - 성공")
     void modifyUser_Success() throws Exception {
         // given
-        User modifyReq = new User();
+        UserVo modifyReq = new UserVo();
         modifyReq.setUid(1L);
         modifyReq.setEmail("updated@brano.com");
         modifyReq.setName("Updated Name");
         LocalDateTime now = LocalDateTime.now();
         modifyReq.setCreatedAt(now);
 
-        given(userService.modifyUser(any(User.class))).willReturn(modifyReq);
+        given(userService.modifyUser(any(UserVo.class))).willReturn(modifyReq);
 
         // when & then
         mockMvc.perform(post("/api/user")
@@ -175,7 +186,7 @@ class UserControllerTest {
     @DisplayName("사용자 수정 (POST) - 없는 사용자 수정 시도")
     void modifyUser_NotFound() throws Exception {
         // given
-        User modifyReq = new User();
+        UserVo modifyReq = new UserVo();
         modifyReq.setUid(167L);
         modifyReq.setEmail("test@brano.com");
         modifyReq.setName("Updated Name");
