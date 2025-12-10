@@ -4,7 +4,7 @@ import kr.pe.ryudaewan.brano.base.service.BusinessException;
 import kr.pe.ryudaewan.brano.base.service.DuplicateException;
 import kr.pe.ryudaewan.brano.base.service.ErrorResponseVo;
 import kr.pe.ryudaewan.brano.base.service.NotExistException;
-import kr.pe.ryudaewan.brano.message.service.RDBMessageSource;
+import kr.pe.ryudaewan.brano.config.RDBMessageSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;

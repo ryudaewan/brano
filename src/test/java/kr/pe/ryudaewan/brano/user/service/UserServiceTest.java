@@ -7,7 +7,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.dao.DuplicateKeyException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -84,14 +83,18 @@ class UserServiceTest {
         // given
         UserVo user = new UserVo();
         user.setEmail("dup@test.com");
+        user.setName("Test User");
 
         given(userDao.insertUser(any(UserVo.class)))
-                .willThrow(new DuplicateKeyException("다른 사용자가 쓰고 있는 이메일로는 신규 사용자 생성 불가능"));
+                .willThrow(new DuplicateUserException());
 
         // when & then
         assertThatThrownBy(() -> userService.registerUser(user))
                 .isInstanceOf(DuplicateUserException.class)
-                .hasMessage("다른 사용자가 쓰고 있는 이메일로는 신규 사용자 생성 불가능");
+                .satisfies(exc -> {
+                    DuplicateUserException duex = (DuplicateUserException) exc;
+                    assertThat(duex.getErrorCode()).isEqualTo("user.dup.email");
+                });
     }
 
     @Test

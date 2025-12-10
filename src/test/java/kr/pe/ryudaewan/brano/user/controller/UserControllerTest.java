@@ -2,9 +2,9 @@ package kr.pe.ryudaewan.brano.user.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.pe.ryudaewan.brano.base.service.ErrorResponseVo;
+import kr.pe.ryudaewan.brano.config.RDBMessageSource;
 import kr.pe.ryudaewan.brano.config.SecurityConfigLocal;
 import kr.pe.ryudaewan.brano.configuration.TestH2Config;
-import kr.pe.ryudaewan.brano.message.service.RDBMessageSource;
 import kr.pe.ryudaewan.brano.user.service.DuplicateUserException;
 import kr.pe.ryudaewan.brano.user.service.UserService;
 import kr.pe.ryudaewan.brano.user.service.UserVo;
