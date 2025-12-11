@@ -15,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -31,6 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(UserController.class)
 @Import({SecurityConfigLocal.class, TestH2Config.class})
+@WithMockUser
 class UserControllerTest {
 
     @Autowired
@@ -58,7 +60,7 @@ class UserControllerTest {
         given(userService.findUsers()).willReturn(List.of(user));
 
         // when & then
-        mockMvc.perform(get("/api/users"))
+        mockMvc.perform(get("/users"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].uid").value(1L))
@@ -72,7 +74,7 @@ class UserControllerTest {
         given(userService.findUsers()).willReturn(Collections.emptyList());
 
         // when & then
-        mockMvc.perform(get("/api/users"))
+        mockMvc.perform(get("/users"))
                 .andExpect(status().isNotFound());
     }
 
@@ -89,7 +91,7 @@ class UserControllerTest {
         given(userService.getUser(uid)).willReturn(user);
 
         // when & then
-        mockMvc.perform(get("/api/user/{uid}", uid))
+        mockMvc.perform(get("/users/{uid}", uid))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.uid").value(uid));
@@ -103,13 +105,13 @@ class UserControllerTest {
         given(userService.getUser(uid)).willReturn(null);
 
         // when & then
-        mockMvc.perform(get("/api/user/{uid}", uid))
+        mockMvc.perform(get("/users/{uid}", uid))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    @DisplayName("사용자 등록 (PUT) - 성공")
+    @DisplayName("사용자 등록 (POST) - 성공")
     void registerUser_Success() throws Exception {
         // given
         UserVo requestUser = new UserVo();
@@ -124,7 +126,7 @@ class UserControllerTest {
         given(userService.registerUser(any(UserVo.class))).willReturn(savedUser);
 
         // when & then
-        mockMvc.perform(put("/api/user")
+        mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestUser)))
                 .andDo(print())
@@ -133,7 +135,7 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("사용자 등록 (PUT) - 기 등록한 이메일 주소로 인해 실패")
+    @DisplayName("사용자 등록 (POST) - 기 등록한 이메일 주소로 인해 실패")
     void registerUser_DupEmail() throws Exception {
         // given
         LocalDateTime now = LocalDateTime.now();
@@ -151,7 +153,7 @@ class UserControllerTest {
                 .willReturn(errorMessage);
 
         // when & then
-        mockMvc.perform(put("/api/user")
+        mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestUser)))
                 .andDo(print())
@@ -161,7 +163,7 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("사용자 수정 (POST) - 성공")
+    @DisplayName("사용자 수정 (PUT) - 성공")
     void modifyUser_Success() throws Exception {
         // given
         UserVo modifyReq = new UserVo();
@@ -171,10 +173,10 @@ class UserControllerTest {
         LocalDateTime now = LocalDateTime.now();
         modifyReq.setCreatedAt(now);
 
-        given(userService.modifyUser(any(UserVo.class))).willReturn(modifyReq);
+        given(userService.modifyUser(any(Long.class), any(UserVo.class))).willReturn(modifyReq);
 
         // when & then
-        mockMvc.perform(post("/api/user")
+        mockMvc.perform(put("/users/{uid}", modifyReq.getUid())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(modifyReq)))
                 .andDo(print())
@@ -183,7 +185,7 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("사용자 수정 (POST) - 없는 사용자 수정 시도")
+    @DisplayName("사용자 수정 (PUT) - 없는 사용자 수정 시도")
     void modifyUser_NotFound() throws Exception {
         // given
         UserVo modifyReq = new UserVo();
@@ -191,10 +193,10 @@ class UserControllerTest {
         modifyReq.setEmail("test@brano.com");
         modifyReq.setName("Updated Name");
 
-        given(userService.modifyUser(modifyReq)).willReturn(null);
+        given(userService.modifyUser(167L, modifyReq)).willReturn(null);
 
         // when & then
-        mockMvc.perform(post("/api/user")
+        mockMvc.perform(put("/users/{uid}", modifyReq.getUid())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(modifyReq)))
                 .andDo(print())
@@ -209,7 +211,7 @@ class UserControllerTest {
         given(userService.eraseUser(uid)).willReturn(1);
 
         // when & then
-        mockMvc.perform(delete("/api/user/{uid}", uid))
+        mockMvc.perform(delete("/users/{uid}", uid))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
@@ -222,7 +224,7 @@ class UserControllerTest {
         given(userService.eraseUser(uid)).willReturn(0);
 
         // when & then
-        mockMvc.perform(delete("/api/user/{uid}", uid))
+        mockMvc.perform(delete("/users/{uid}", uid))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }

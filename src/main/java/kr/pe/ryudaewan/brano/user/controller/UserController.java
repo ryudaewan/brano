@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/users")
 public class UserController {
     private final UserService userService;
 
@@ -18,7 +19,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/api/users")
+    @GetMapping
     public ResponseEntity<List<UserVo>> findUsers() {
         List<UserVo> dbUsers = this.userService.findUsers();
 
@@ -29,7 +30,7 @@ public class UserController {
         return ResponseEntity.ok(dbUsers);
     }
 
-    @GetMapping("/api/user/{uid}")
+    @GetMapping("/{uid}")
     public ResponseEntity<UserVo> getUser(@PathVariable Long uid) {
         UserVo dbUser = this.userService.getUser(uid);
 
@@ -38,14 +39,14 @@ public class UserController {
         return ResponseEntity.ok(dbUser);
     }
 
-    @PutMapping("/api/user")
+    @PostMapping
     public UserVo registerUser(@RequestBody @Valid UserVo user) {
         return this.userService.registerUser(user);
     }
 
-    @PostMapping("/api/user")
-    public ResponseEntity<UserVo> modifyUser(@RequestBody @Valid UserVo user) {
-        UserVo dbUser = userService.modifyUser(user);
+    @PutMapping("/{uid}")
+    public ResponseEntity<UserVo> modifyUser(@PathVariable Long uid, @RequestBody @Valid UserVo user) {
+        UserVo dbUser = userService.modifyUser(uid, user);
 
         if (dbUser == null) {
             return ResponseEntity.notFound().build();
@@ -54,7 +55,7 @@ public class UserController {
         return ResponseEntity.ok(dbUser);
     }
 
-    @DeleteMapping("/api/user/{uid}")
+    @DeleteMapping("/{uid}")
     public ResponseEntity<Integer> deleteUser(@PathVariable Long uid) {
         int cnt = this.userService.eraseUser(uid);
 

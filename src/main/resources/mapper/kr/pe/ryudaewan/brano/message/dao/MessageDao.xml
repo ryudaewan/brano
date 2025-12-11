@@ -27,42 +27,59 @@
         and u.deleted_at is null
     </select>
 
-    <!--    <select id="selectUsers" resultType="kr.pe.ryudaewan.brano.user.service.User">-->
-    <!--        /* UserDao.selectUsers */-->
-    <!--        select u.uid-->
-    <!--        , u.name-->
-    <!--        , u.email-->
-    <!--        , u.created_at-->
-    <!--        , u.updated_at-->
-    <!--        , u.deleted_at-->
-    <!--        from users u-->
-    <!--        where u.deleted_at is null-->
-    <!--        and u.-->
-    <!--    </select>-->
+    <select id="selectMessages" resultMap="messageResultMap">
+        /* MessageDao.selectMessages */
+        select u.message_id
+        , u.locale
+        , u.message_key
+        , u.message_content
+        , u.created_at
+        , u.updated_at
+        , u.deleted_at
+        from messages u
+        where m.deleted_at is null
+    </select>
 
-    <!--    <insert id="insertUser" parameterType="kr.pe.ryudaewan.brano.user.service.User">-->
-    <!--        <selectKey keyProperty="uid" resultType="long" order="BEFORE">-->
-    <!--            /* UserDao.insertUser */-->
-    <!--            select coalesce(max(u.uid), -1) + 1 from users u-->
-    <!--        </selectKey>-->
-    <!--        /* UserDao.insertUser */-->
-    <!--        insert into users(uid, name, email, created_at)-->
-    <!--        values (#{uid}, #{name}, #{email}, #{createdAt} )-->
-    <!--    </insert>-->
+    <select id="selectMessageByMessageId" resultMap="messageResultMap" parameterType="java.lang.Long">
+        /* MessageDao.selectMessageByMessageId */
+        select u.message_id
+        , u.locale
+        , u.message_key
+        , u.message_content
+        , u.created_at
+        , u.updated_at
+        , u.deleted_at
+        from messages u
+        where m.message_id = #{messageId}
+        and m.deleted_at is null
+    </select>
 
-    <!--    <update id="updateUser" parameterType="kr.pe.ryudaewan.brano.user.service.User">-->
-    <!--        /* UserDao.updateUser */-->
-    <!--        update users u set u.name = #{name}-->
-    <!--        , u.email = #{email}-->
-    <!--        , u.updated_at = #{updatedAt}-->
-    <!--        where u.uid = #{uid}-->
-    <!--        and u.deleted_at is null-->
-    <!--    </update>-->
+    <insert id="insertMessage" parameterType="kr.pe.ryudaewan.brano.message.service.MessageVo">
+        <selectKey keyProperty="messageId" resultType="long" order="BEFORE">
+            /* MessageDao.insertMessage */
+            select coalesce(max(m.message_id), -1) + 1 from messages m
+        </selectKey>
+        /* MessageDao.insertMessage */
+        insert into messages(message_id, locale, message_key, message_content, created_at)
+        values (#{messageId}, #{locale}, #{messageKey}, #{messageContent}, now() )
+    </insert>
 
-    <!--    <update id="deleteUser" parameterType="java.lang.Long">-->
-    <!--        /* UserDao.deleteUser */-->
-    <!--        update users u set u.deleted_at = now()-->
-    <!--        where u.uid = #{uid}-->
-    <!--        and u.deleted_at is null-->
-    <!--    </update>-->
+    <update id="updateMessage" parameterType="kr.pe.ryudaewan.brano.message.service.MessageVo">
+        /* MessageDao.updateMessage */
+        update messages m
+        set m.locale = #{locale}
+        , m.message_key = #{messageKey}
+        , m.message_content = #{messageContent}
+        , m.updated_at = now()
+        where m.message_id = #{messageId}
+        and m.deleted_at is null
+    </update>
+
+    <update id="deleteMessage" parameterType="long">
+        /* MessageDao.deleteMessage */
+        update messages m
+        set m.deleted_at = now()
+        where m.message_id = #{messageId}
+        and m.deleted_at is null
+    </update>
 </mapper>

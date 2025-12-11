@@ -57,10 +57,14 @@ public class UserService {
     }
 
     @Transactional
-    public UserVo modifyUser(UserVo user) {
-        Long uid = user.getUid();
-
+    public UserVo modifyUser(Long uid, UserVo user) {
         if (null == uid) return null;
+
+        if (null == user) return null;
+
+        if (null == user.getUid()) return null;
+
+        if (user.getUid() != uid) return null;
 
         UserVo dbUser = this.userDao.selectUserByUid(uid);
 
