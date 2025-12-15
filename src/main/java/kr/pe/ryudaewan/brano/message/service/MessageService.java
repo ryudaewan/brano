@@ -3,12 +3,14 @@ package kr.pe.ryudaewan.brano.message.service;
 import kr.pe.ryudaewan.brano.message.dao.MessageDao;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -23,13 +25,9 @@ public class MessageService {
 
     @Transactional(readOnly = true)
     public List<MessageVo> findMessages() {
-        List<MessageVo> result = this.messageDao.selectMessages();
+        Optional<List<MessageVo>> result = Optional.ofNullable(this.messageDao.selectMessages());
 
-        if (null == result) {
-            result = Collections.emptyList();
-        }
-
-        return result;
+        return result.orElse(Collections.emptyList());
     }
 
     @Transactional(readOnly = true)
@@ -45,7 +43,11 @@ public class MessageService {
     public MessageVo registerMessage(MessageVo msg) {
         msg.setCreatedAt(LocalDateTime.now());
 
-        this.messageDao.insertMessage(msg);
+        try {
+            this.messageDao.insertMessage(msg);
+        } catch (DuplicateKeyException dke) {
+            throw new DuplicateMessageException();
+        }
 
         log.debug("생성한 메시지 정보 = [{}]", msg);
 

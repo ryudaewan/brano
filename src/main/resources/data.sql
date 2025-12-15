@@ -17,4 +17,5 @@ VALUES (0, 'ko', 'validation.name.required', '이름은 필수입니다', now())
      , (2, 'ko', 'validation.email.required', '이메일은 필수입니다', now())
      , (3, 'ko', 'user.dup.email', '이미 쓰는 이메일로 새 사용자 등록 시도', now())
      , (4, 'ko', 'message.not.exist', '없는 메시지 코드입니다', now())
+     , (5, 'ko', 'message.dup.key', '이 언어에는 같은 메시지 키로 등록한 메시지가 이미 있습니다', now())
 ;

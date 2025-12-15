@@ -31,8 +31,8 @@ public class MessageController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<MessageVo> getMessage(@PathVariable Long uid) {
-        MessageVo dbUser = this.messageService.getMessage(uid);
+    public ResponseEntity<MessageVo> getMessage(@PathVariable Long id) {
+        MessageVo dbUser = this.messageService.getMessage(id);
 
         if (null == dbUser) return ResponseEntity.notFound().build();
 
