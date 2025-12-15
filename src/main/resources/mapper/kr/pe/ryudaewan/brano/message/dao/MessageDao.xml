@@ -37,7 +37,7 @@
         , u.updated_at
         , u.deleted_at
         from messages u
-        where m.deleted_at is null
+        where u.deleted_at is null
     </select>
 
     <select id="selectMessageByMessageId" resultMap="messageResultMap" parameterType="java.lang.Long">
@@ -50,8 +50,8 @@
         , u.updated_at
         , u.deleted_at
         from messages u
-        where m.message_id = #{messageId}
-        and m.deleted_at is null
+        where u.message_id = #{messageId}
+        and u.deleted_at is null
     </select>
 
     <insert id="insertMessage" parameterType="kr.pe.ryudaewan.brano.message.service.MessageVo">
