@@ -69,7 +69,7 @@ public class MessageService {
 
         if (null == messageId) return null;
 
-        if (mid == msg.getMessageId()) return null;
+        if (mid != msg.getMessageId()) return null;
 
         MessageVo dbMsg = this.messageDao.selectMessageByMessageId(messageId);
 
