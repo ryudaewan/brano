@@ -18,12 +18,12 @@ public class SecurityConfigLocal {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PathRequest.toH2Console()).permitAll()
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                        .requestMatchers("/favicon.ico", "/**/*.html", "/api/**").permitAll()
+                        .requestMatchers("/favicon.ico", "/**/*.html").permitAll()
                         .anyRequest().authenticated()
                 )
                 .csrf(csrf -> csrf
-                        .ignoringRequestMatchers(PathRequest.toH2Console()) // h2-console 은 CSRF 비활성화
-                        .ignoringRequestMatchers("/api/**")
+                        //.ignoringRequestMatchers(PathRequest.toH2Console()) // h2-console 은 CSRF 비활성화
+                        .disable()
                 )
                 .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
         ;

@@ -114,7 +114,7 @@ class UserServiceTest {
         given(userDao.updateUser(any(UserVo.class))).willReturn(1);
 
         // when
-        UserVo result = userService.modifyUser(requestUser);
+        UserVo result = userService.modifyUser(uid, requestUser);
 
         // then
         assertThat(result).isNotNull();
@@ -137,7 +137,7 @@ class UserServiceTest {
         given(userDao.selectUserByUid(uid)).willReturn(deletedUser);
 
         // when
-        UserVo result = userService.modifyUser(requestUser);
+        UserVo result = userService.modifyUser(1L, requestUser);
 
         // then
         assertThat(result).isNull();

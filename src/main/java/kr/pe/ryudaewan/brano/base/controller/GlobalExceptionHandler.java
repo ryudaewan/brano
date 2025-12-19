@@ -3,7 +3,7 @@ package kr.pe.ryudaewan.brano.base.controller;
 import kr.pe.ryudaewan.brano.base.service.BusinessException;
 import kr.pe.ryudaewan.brano.base.service.DuplicateException;
 import kr.pe.ryudaewan.brano.base.service.ErrorResponseVo;
-import kr.pe.ryudaewan.brano.base.service.NotExistException;
+import kr.pe.ryudaewan.brano.base.service.NoSuchDataException;
 import kr.pe.ryudaewan.brano.config.MessageSourceInterpolator;
 import kr.pe.ryudaewan.brano.config.RDBMessageSource;
 import lombok.extern.slf4j.Slf4j;
@@ -51,8 +51,8 @@ public class GlobalExceptionHandler {
                 .collect(Collectors.toList());
     }
 
-    @ExceptionHandler(NotExistException.class)
-    public ResponseEntity<ErrorResponseVo> handleNotExistException(NotExistException notExistEx) {
+    @ExceptionHandler(NoSuchDataException.class)
+    public ResponseEntity<ErrorResponseVo> handleNotExistException(NoSuchDataException notExistEx) {
         return this.makeErrorResponse(notExistEx, HttpStatus.NOT_FOUND);
     }
 
