@@ -42,10 +42,11 @@ VALUES ('ko', 'AbstractAccessDecisionManager.accessDenied','접근이 거부되�
      , ('ko', 'DigestAuthenticationFilter.nonceNotNumeric','Nonce 토큰의 첫 글자는 숫자로 시작해야 합니다. 현재 nonce 값은 {0}입니다.', now(), 27)
      , ('ko', 'DigestAuthenticationFilter.nonceNotTwoTokens','Nonce는 두 개의 토큰을 만들어야 합니다. 현재 nonce 값은 {0}입니다.', now(), 28)
      , ('ko', 'DigestAuthenticationFilter.usernameNotFound','{0} ID를 찾을 수 없습니다.', now(), 29)
+     , ('ko', 'ExceptionTranslationFilter.insufficientAuthentication', '이 자원에 접근하려면 완전한 인증이 필요합니다', now(), 48)
      , ('ko', 'JdbcDaoImpl.noAuthority','{0} 사용자는 권한이 없습니다.', now(), 30)
      , ('ko', 'JdbcDaoImpl.notFound','{0} 사용자를 찾을 수 없습니다.', now(), 31)
      , ('ko', 'LdapAuthenticationProvider.badCredentials','자격 증명에 실패하였습니다.', now(), 32)
-     , ('ko', '#LdapAuthenticationProvider.badLdapConnection','Connection to LDAP server failed', now(), 33)
+     , ('ko', 'LdapAuthenticationProvider.badLdapConnection','Connection to LDAP server failed', now(), 33)
      , ('ko', 'LdapAuthenticationProvider.credentialsExpired','자격 증명 유효 기간이 만료되었습니다.', now(), 34)
      , ('ko', 'LdapAuthenticationProvider.disabled','유효하지 않은 사용자입니다.', now(), 35)
      , ('ko', 'LdapAuthenticationProvider.expired','사용자 계정의 유효 기간이 만료 되었습니다.', now(), 36)
@@ -64,7 +65,7 @@ VALUES ('ko', 'AbstractAccessDecisionManager.accessDenied','접근이 거부되�
 
 -- 메시지 샘플 데이터
 INSERT INTO messages (message_id, locale, message_key, message_content, created_at)
-VALUES (48, 'ko', 'validation.name.required', '이름은 필수입니다', now())
+VALUES (54, 'ko', 'validation.name.required', '이름은 필수입니다', now())
      , (49, 'ko', 'validation.email.invalid', '올바른 이메일을 입력하세요', now())
      , (50, 'ko', 'validation.email.required', '이메일은 필수입니다', now())
      , (51, 'ko', 'user.dup.email', '이미 쓰는 이메일로 새 사용자 등록 시도', now())
