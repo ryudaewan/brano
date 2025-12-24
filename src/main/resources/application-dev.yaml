@@ -5,3 +5,6 @@ spring:
   sql:
     init:
       mode: never
+springdoc:
+  info:
+    title: brano API (dev)
