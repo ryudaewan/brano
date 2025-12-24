@@ -8,3 +8,13 @@ mybatis:
   configuration:
     map-underscore-to-camel-case: true
     jdbc-type-for-null: NULL
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: alpha
+  info:
+  #  title: brano API
+    version: 1.0
+    description: brano API

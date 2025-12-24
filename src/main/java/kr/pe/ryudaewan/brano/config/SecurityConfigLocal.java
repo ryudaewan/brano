@@ -12,13 +12,15 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfigLocal {
+    private final String[] permitAllUrls = {"/favicon.ico", "/**/*.html", "/swagger-ui/**", "/api-docs/**"};
+
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PathRequest.toH2Console()).permitAll()
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                        .requestMatchers("/favicon.ico", "/**/*.html").permitAll()
+                        .requestMatchers(this.permitAllUrls).permitAll()
                         .anyRequest().authenticated()
                 )
                 .csrf(csrf -> csrf
