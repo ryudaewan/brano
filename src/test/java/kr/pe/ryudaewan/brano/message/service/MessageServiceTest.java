@@ -142,12 +142,12 @@ class MessageServiceTest {
     }
 
     @Test
-    @DisplayName("modifyMessage: (현재 구현) mid == msg.messageId 이면 null을 반환한다")
+    @DisplayName("modifyMessage: (현재 구현) mid != msg.messageId 이면 null을 반환한다")
     void modifyMessage_returnsNull_whenMidEqualsMessageId_byCurrentImplementation() {
         MessageVo msg = new MessageVo();
         msg.setMessageId(5L);
 
-        MessageVo result = messageService.modifyMessage(5L, msg);
+        MessageVo result = messageService.modifyMessage(7L, msg);
 
         assertThat(result).isNull();
         verifyNoInteractions(messageDao);
@@ -162,7 +162,7 @@ class MessageServiceTest {
         // 현재 구현상 성공 경로로 가려면 mid != msg.messageId 여야 함
         when(messageDao.selectMessageByMessageId(100L)).thenReturn(null);
 
-        MessageVo result = messageService.modifyMessage(999L, msg);
+        MessageVo result = messageService.modifyMessage(100L, msg);
 
         assertThat(result).isNull();
         verify(messageDao, times(1)).selectMessageByMessageId(100L);
@@ -182,7 +182,7 @@ class MessageServiceTest {
 
         when(messageDao.selectMessageByMessageId(100L)).thenReturn(dbMsg);
 
-        MessageVo result = messageService.modifyMessage(999L, msg);
+        MessageVo result = messageService.modifyMessage(100L, msg);
 
         assertThat(result).isNull();
         verify(messageDao, times(1)).selectMessageByMessageId(100L);
@@ -202,7 +202,7 @@ class MessageServiceTest {
         when(messageDao.selectMessageByMessageId(100L)).thenReturn(dbMsg);
         when(messageDao.updateMessage(any(MessageVo.class))).thenReturn(0);
 
-        MessageVo result = messageService.modifyMessage(999L, msg);
+        MessageVo result = messageService.modifyMessage(100L, msg);
 
         assertThat(result).isNull();
         verify(messageDao, times(1)).selectMessageByMessageId(100L);
@@ -229,7 +229,7 @@ class MessageServiceTest {
         when(messageDao.updateMessage(any(MessageVo.class))).thenReturn(1);
 
         LocalDateTime before = LocalDateTime.now();
-        MessageVo result = messageService.modifyMessage(999L, msg); // mid != messageId 여야 현재 구현상 진행됨
+        MessageVo result = messageService.modifyMessage(100L, msg); // mid != messageId 여야 현재 구현상 진행됨
         LocalDateTime after = LocalDateTime.now();
 
         assertThat(result).isSameAs(msg);
