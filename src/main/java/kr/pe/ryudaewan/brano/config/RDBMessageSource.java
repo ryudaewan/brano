@@ -58,6 +58,6 @@ public class RDBMessageSource extends AbstractMessageSource {
 
         log.debug("메시지 = [{}]", dbMessage.getMessageContent());
 
-        return new MessageFormat(message.getMessageContent(), locale);
+        return new MessageFormat(dbMessage.getMessageContent(), locale);
     }
 }

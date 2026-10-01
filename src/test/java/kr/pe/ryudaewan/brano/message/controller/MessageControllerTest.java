@@ -175,6 +175,7 @@ class MessageControllerTest {
 
         // when & then
         mockMvc.perform(post("/messages")
+                        .locale(LocaleContextHolder.getLocale())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestMessage)))
                 .andDo(print())

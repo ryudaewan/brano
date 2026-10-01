@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.StringTokenizer;
 import java.util.stream.Collectors;
 
@@ -25,7 +24,6 @@ import java.util.stream.Collectors;
 @Slf4j
 public class GlobalExceptionHandler {
     private final RDBMessageSource messageSource;
-    private final Locale locale = LocaleContextHolder.getLocale();
 
     @Autowired
     public GlobalExceptionHandler(RDBMessageSource messageSource) {
@@ -67,7 +65,7 @@ public class GlobalExceptionHandler {
     }
 
     private ResponseEntity<ErrorResponseVo> makeErrorResponse(BusinessException bizEx, HttpStatus status) {
-        String message = this.messageSource.getMessage(bizEx.getErrorCode(), bizEx.getArgs(), this.locale);
+        String message = this.messageSource.getMessage(bizEx.getErrorCode(), bizEx.getArgs(), LocaleContextHolder.getLocale());
         ErrorResponseVo body = new ErrorResponseVo(bizEx.getErrorCode(), message);
 
         return ResponseEntity.status(status).body(body);
