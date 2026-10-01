@@ -154,6 +154,7 @@ class UserControllerTest {
 
         // when & then
         mockMvc.perform(post("/users")
+                        .locale(LocaleContextHolder.getLocale())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestUser)))
                 .andDo(print())

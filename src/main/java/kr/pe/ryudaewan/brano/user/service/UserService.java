@@ -64,7 +64,7 @@ public class UserService {
 
         if (null == user.getUid()) return null;
 
-        if (user.getUid() != uid) return null;
+        if (!uid.equals(user.getUid())) return null;
 
         UserVo dbUser = this.userDao.selectUserByUid(uid);
 

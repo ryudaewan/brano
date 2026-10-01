@@ -8,7 +8,8 @@
                extends="kr.pe.ryudaewan.brano.base.dao.CommonDao.commonResultMap">
         <id column="message_id" property="messageId"/>
         <result column="locale" property="locale"/>
-        <result column="email" property="email"/>
+        <result column="message_key" property="messageKey"/>
+        <result column="message_content" property="messageContent"/>
     </resultMap>
 
     <select id="selectMessageByMessageKeyAndLocale" resultMap="messageResultMap"
